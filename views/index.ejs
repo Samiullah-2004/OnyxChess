@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bg:       '#0d0d0d',
+                        surface:  '#161616',
+                        surface2: '#1f1f1f',
+                        border:   '#2a2a2a',
+                        accent:   '#b4ff39',
+                        'text-hi':  '#f0f0f0',
+                        'text-lo':  '#555555',
+                        'text-mid': '#888888',
+                        danger:   '#ff5252',
+                        'light-sq': '#eeeed2',
+                        'dark-sq':  '#769656',
+                    }
+                }
+            }
+        }
+    </script>
+    <title>ChessLive</title>
+</head>
+<body>
+    <div class="app-wrapper">
+        <div class="status-bar">
+            <div class="logo">♟ ChessLive</div>
+            <div class="status-info">
+                <span class="role-badge" id="roleBadge">Connecting...</span>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="side-panel left-panel">
+                <div class="player-card" id="blackPlayerCard">
+                    <div class="player-icon black-icon">♚</div>
+                    <div class="player-info">
+                        <span class="player-label">Black</span>
+                        <span class="player-status" id="blackStatus">Waiting...</span>
+                    </div>
+                    <div class="turn-dot" id="blackDot"></div>
+                </div>
+
+                <div class="move-log">
+                    <div class="move-log-title">Move History</div>
+                    <div class="move-log-list" id="moveLog">
+                        <span class="no-moves">No moves yet</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="board-container">
+                <div class="rank-labels left-labels">
+                    <span>8</span><span>7</span><span>6</span><span>5</span>
+                    <span>4</span><span>3</span><span>2</span><span>1</span>
+                </div>
+                <div class="chessboard" id="chessboard"></div>
+                <div class="rank-labels right-labels">
+                    <span>8</span><span>7</span><span>6</span><span>5</span>
+                    <span>4</span><span>3</span><span>2</span><span>1</span>
+                </div>
+                <div class="file-labels">
+                    <span>a</span><span>b</span><span>c</span><span>d</span>
+                    <span>e</span><span>f</span><span>g</span><span>h</span>
+                </div>
+            </div>
+
+            <div class="side-panel right-panel">
+                <div class="player-card" id="whitePlayerCard">
+                    <div class="player-icon white-icon">♔</div>
+                    <div class="player-info">
+                        <span class="player-label">White</span>
+                        <span class="player-status" id="whiteStatus">Waiting...</span>
+                    </div>
+                    <div class="turn-dot" id="whiteDot"></div>
+                </div>
+
+                <div class="game-info-panel">
+                    <div class="info-title">Game Status</div>
+                    <div class="info-row">
+                        <span class="info-label">Turn</span>
+                        <span class="info-value" id="currentTurnText">White</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Half Moves</span>
+                        <span class="info-value" id="halfMoveCount">0</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Full Moves</span>
+                        <span class="info-value" id="fullMoveCount">1</span>
+                    </div>
+                    <div class="check-alert" id="checkAlert" style="display:none;">
+                        ⚠ Check!
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="toast" id="toast"></div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.8.3/socket.io.min.js" integrity="sha384-kzavj5fiMwLKzzD1f8S7TeoVIEi7uKHvbTA3ueZkrzYq75pNQUiUi6Dy98Q3fxb0" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js" integrity="sha512-xRllwz2gdZciIB+AkEbeq+gVhX8VB8XsfqeFbUh+SzHlN96dEduwtTuVuc2u9EROlmW9+yhRlxjif66ORpsgVA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="/javascript/chessgame.js"></script>
+</body>
+</html>

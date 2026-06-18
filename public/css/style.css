@@ -1,0 +1,223 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+    --bg:        #0d0d0d;
+    --surface:   #161616;
+    --surface2:  #1f1f1f;
+    --border:    #2a2a2a;
+    --accent:    #b4ff39;
+    --accent-bg: rgba(180,255,57,0.1);
+    --text-hi:   #f0f0f0;
+    --text-lo:   #555;
+    --text-mid:  #888;
+    --light-sq:  #eeeed2;
+    --dark-sq:   #769656;
+    --danger:    #ff5252;
+}
+
+html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--text-hi);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    overflow: hidden;
+}
+
+/* ── App layout ── */
+.app-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding: 10px 14px 6px;
+    gap: 8px;
+}
+
+/* ── Status bar ── */
+.status-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+}
+.logo { font-size: 1.1rem; font-weight: 700; color: var(--accent); letter-spacing: .05em; }
+.status-info { display: flex; align-items: center; gap: 10px; }
+
+.role-badge {
+    font-size: .72rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .07em; padding: 4px 10px; border-radius: 20px;
+    border: 1px solid var(--border); background: var(--surface);
+    color: var(--text-mid); transition: all .3s;
+}
+.role-badge.white    { background: var(--accent-bg); border-color: var(--accent); color: var(--accent); }
+.role-badge.black    { background: rgba(255,255,255,.06); border-color: #444; color: var(--text-hi); }
+.role-badge.spectator{ color: var(--text-mid); }
+
+/* ── Main content ── */
+.main-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    flex: 1;
+    min-height: 0;
+}
+
+/* ── Side panels ── */
+.side-panel {
+    display: flex; flex-direction: column; gap: 12px;
+    width: 165px; flex-shrink: 0;
+}
+
+.player-card {
+    display: flex; align-items: center; gap: 8px;
+    padding: 9px 11px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 9px; transition: border-color .3s, background .3s;
+}
+.player-card.active-turn { border-color: var(--accent); background: var(--accent-bg); }
+.player-icon  { font-size: 1.5rem; line-height: 1; }
+.player-info  { display: flex; flex-direction: column; gap: 1px; flex: 1; }
+.player-label { font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+.player-status{ font-size: .68rem; color: var(--text-lo); }
+.turn-dot     { width: 7px; height: 7px; border-radius: 50%; background: var(--border); transition: background .3s, box-shadow .3s; }
+.turn-dot.active { background: var(--accent); box-shadow: 0 0 7px var(--accent); }
+
+/* Move log */
+.move-log { background: var(--surface); border: 1px solid var(--border); border-radius: 9px; overflow: hidden; flex: 1; }
+.move-log-title { padding: 7px 11px; font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--text-lo); border-bottom: 1px solid var(--border); background: var(--surface2); }
+.move-log-list  { padding: 7px; font-family: 'Courier New', monospace; font-size: .73rem; color: var(--text-mid); max-height: 210px; overflow-y: auto; display: flex; flex-direction: column; gap: 2px; }
+.move-log-list::-webkit-scrollbar { width: 3px; }
+.move-log-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.move-entry { display: flex; gap: 5px; align-items: baseline; }
+.move-num   { color: var(--text-lo); min-width: 18px; }
+.move-w     { color: var(--text-hi); }
+.move-b     { color: var(--text-mid); }
+.no-moves   { color: var(--text-lo); font-style: italic; font-size: .7rem; }
+
+/* Game info */
+.game-info-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 9px; overflow: hidden; }
+.info-title { padding: 7px 11px; font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--text-lo); border-bottom: 1px solid var(--border); background: var(--surface2); }
+.info-row   { display: flex; justify-content: space-between; align-items: center; padding: 6px 11px; border-bottom: 1px solid var(--border); }
+.info-row:last-of-type { border-bottom: none; }
+.info-label { font-size: .7rem;  color: var(--text-lo); }
+.info-value { font-size: .75rem; font-weight: 600; font-family: 'Courier New', monospace; }
+
+.check-alert {
+    margin: 8px; padding: 7px 10px;
+    background: rgba(255,82,82,.1); border: 1px solid var(--danger);
+    border-radius: 6px; color: var(--danger);
+    font-size: .76rem; font-weight: 700; text-align: center;
+    animation: pulse 1s ease infinite;
+}
+@keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:.5; } }
+
+/* ── Board container ── */
+.board-container {
+    display: grid;
+    grid-template-columns: 16px 1fr 16px;
+    grid-template-rows: 1fr auto;
+    gap: 4px;
+    align-items: center;
+}
+.rank-labels { display: flex; flex-direction: column; justify-content: space-around; align-self: stretch; padding: 2px 0; }
+.rank-labels span, .file-labels span { font-size: .62rem; color: var(--text-lo); text-align: center; line-height: 1; }
+.file-labels { grid-column: 2; display: flex; justify-content: space-around; padding: 0 2px; }
+
+/* ── Chessboard ── */
+.chessboard {
+    grid-column: 2;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows:    repeat(8, 1fr);
+    width:  min(60vh, 500px);
+    height: min(60vh, 500px);
+    border: 2px solid #222;
+    border-radius: 3px;
+    overflow: hidden;
+    box-shadow: 0 8px 40px rgba(0,0,0,.75);
+}
+.chessboard.flipped { transform: rotate(180deg); }
+.chessboard.flipped .piece { display: inline-block; transform: rotate(180deg); }
+
+/* ── Squares ── */
+.square {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    cursor: default;
+    user-select: none;
+}
+.square.light { background: var(--light-sq); }
+.square.dark  { background: var(--dark-sq); }
+
+/* Selection */
+.square.sel        { background: #f6f669 !important; }
+/* Last move */
+.square.last-move  { background: rgba(180,255,57,.38) !important; }
+
+/* Legal move dot (empty square) */
+.square.legal-dot::after {
+    content: '';
+    position: absolute;
+    width: 30%; height: 30%;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.2);
+    pointer-events: none;
+}
+/* Legal capture ring */
+.square.legal-cap::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 5px solid rgba(0,0,0,0.2);
+    pointer-events: none;
+}
+
+/* ── Pieces ── */
+.piece {
+    font-size: clamp(1.5rem, 3.8vw, 2.3rem);
+    line-height: 1;
+    cursor: grab;
+    position: relative;
+    z-index: 2;
+    transition: transform .1s;
+}
+.piece:active { cursor: grabbing; transform: scale(1.18); }
+
+/* WHITE pieces — hollow Unicode glyphs, shown in white with dark stroke */
+.wpiece {
+    color: #ffffff;
+    -webkit-text-stroke: 1.8px #000000;
+    paint-order: stroke fill;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.9);
+}
+
+/* BLACK pieces — solid Unicode glyphs, shown in near-black with lighter stroke */
+.bpiece {
+    color: #1c1c1c;
+    -webkit-text-stroke: 1px #888888;
+    paint-order: stroke fill;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+}
+
+/* ── Toast ── */
+.toast {
+    position: fixed; bottom: 22px; left: 50%;
+    transform: translateX(-50%) translateY(16px);
+    background: var(--surface2); border: 1px solid var(--border);
+    color: var(--text-hi); padding: 9px 18px; border-radius: 8px;
+    font-size: .83rem; font-weight: 500;
+    opacity: 0; transition: opacity .3s, transform .3s;
+    pointer-events: none; z-index: 999; white-space: nowrap;
+}
+.toast.show         { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast.toast-error  { border-color: var(--danger); color: var(--danger); }
+.toast.toast-success{ border-color: var(--accent); color: var(--accent); }
+
+/* ── Responsive ── */
+@media (max-width: 780px) {
+    .side-panel { display: none; }
+    .chessboard { width: min(92vw,92vh); height: min(92vw,92vh); }
+}
